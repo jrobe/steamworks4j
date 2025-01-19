@@ -1,10 +1,10 @@
 package com.codedisaster.steamworks;
 
-@SuppressWarnings("unused")
-public class SteamGameServerHTTP extends SteamHTTP {
+public class SteamGameServerHTTP extends SteamHTTP{
 
-	public SteamGameServerHTTP(SteamHTTPCallback callback) {
-		super(true, SteamGameServerHTTPNative.createCallback(new SteamHTTPCallbackAdapter(callback)));
-	}
+    public SteamGameServerHTTP(SteamHTTPCallback callback){
+        super(SteamGameServerAPINative.getSteamGameServerHTTPPointer(),
+        SteamGameServerHTTPNative.createCallback(new SteamHTTPCallbackAdapter(callback)));
+    }
 
 }

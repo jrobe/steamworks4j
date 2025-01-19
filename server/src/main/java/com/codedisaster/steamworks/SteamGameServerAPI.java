@@ -1,55 +1,66 @@
 package com.codedisaster.steamworks;
 
-public class SteamGameServerAPI {
+public class SteamGameServerAPI{
 
-	public enum ServerMode {
-		Invalid,
-		NoAuthentication,
-		Authentication,
-		AuthenticationAndSecure
-	}
+    public enum ServerMode{
+        Invalid,
+        NoAuthentication,
+        Authentication,
+        AuthenticationAndSecure
+    }
 
-	private static boolean isRunning = false;
-	private static boolean isNativeAPILoaded = false;
+    private static boolean isRunning = false;
+    private static boolean isNativeAPILoaded = false;
 
-	public static boolean loadLibraries(SteamLibraryLoader loader) {
+    public static void loadLibraries() throws SteamException{
+        loadLibraries(null);
+    }
 
-		if (!isNativeAPILoaded) {
-			isNativeAPILoaded = SteamAPI.loadLibraries(loader);
-			isNativeAPILoaded = isNativeAPILoaded && loader.loadLibrary("steamworks4j-server");
-		}
+    public static void loadLibraries(String libraryPath) throws SteamException{
 
-		return isNativeAPILoaded;
-	}
+        if(isNativeAPILoaded){
+            return;
+        }
 
-	public static boolean init(int ip, short gamePort, short queryPort,
-							   ServerMode serverMode, String versionString) throws SteamException {
+        SteamAPI.loadLibraries(libraryPath);
 
-		if (!isNativeAPILoaded) {
-			throw new SteamException("Native server libraries not loaded.\nEnsure to call SteamGameServerAPI.loadLibraries() first!");
-		}
+        SteamSharedLibraryLoader.loadLibrary("steamworks4j-server", libraryPath);
 
-		isRunning = SteamGameServerAPINative.nativeInit(
-				ip, gamePort, queryPort, serverMode.ordinal(), versionString);
+        isNativeAPILoaded = true;
+    }
 
-		return isRunning;
-	}
+    public static void skipLoadLibraries(){
+        isNativeAPILoaded = true;
+    }
 
-	public static void shutdown() {
-		isRunning = false;
-		SteamGameServerAPINative.nativeShutdown();
-	}
+    public static boolean init(int ip, short steamPort, short gamePort, short queryPort,
+                               ServerMode serverMode, String versionString) throws SteamException{
 
-	public static void runCallbacks() {
-		SteamGameServerAPINative.runCallbacks();
-	}
+        if(!isNativeAPILoaded){
+            throw new SteamException("Native server libraries not loaded.\nEnsure to call SteamGameServerAPI.loadLibraries() first!");
+        }
 
-	public static boolean isSecure() {
-		return SteamGameServerAPINative.isSecure();
-	}
+        isRunning = SteamGameServerAPINative.nativeInit(
+        ip, steamPort, gamePort, queryPort, serverMode.ordinal(), versionString);
 
-	public static SteamID getSteamID() {
-		return new SteamID(SteamGameServerAPINative.nativeGetSteamID());
-	}
+        return isRunning;
+    }
+
+    public static void shutdown(){
+        isRunning = false;
+        SteamGameServerAPINative.nativeShutdown();
+    }
+
+    public static void runCallbacks(){
+        SteamGameServerAPINative.runCallbacks();
+    }
+
+    public static boolean isSecure(){
+        return SteamGameServerAPINative.isSecure();
+    }
+
+    public static SteamID getSteamID(){
+        return new SteamID(SteamGameServerAPINative.nativeGetSteamID());
+    }
 
 }

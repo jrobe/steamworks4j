@@ -2,8 +2,8 @@
 sdk/
 
 # generated sources
-java-wrapper/src/main/native/com_codedisaster_steamworks_*
-server/src/main/native/com_codedisaster_steamworks_*
+java-wrapper/src/main/native/com.codedisaster.steamworks.*
+server/src/main/native/com.codedisaster.steamworks.*
 
 # output
 build/
@@ -17,16 +17,15 @@ Makefile
 *.vcxproj
 *.vcxproj.*
 *.xcodeproj/
-*.xcworkspace
+.gradle/
 
 # IDE files
 .idea/
 *.iml
 
 # build tools
-build-natives/.vs/
 build-natives/bin/
-premake5*
+premake5.exe
 
 # test resources
 steam_appid.txt
